@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.dao.StudentDao">
+    <select id="selectStudents" resultType="Student">
+        select id,name,email,age from student order by id desc
+    </select>
+
+    <insert id="addStudent">
+        insert into student(name,email,age) values (#{name}, #{email}, #{age})
+    </insert>
+
+    <!--    &lt;!&ndash;==========================where用法开始=======================================&ndash;&gt;-->
+    <!--   <select id="selectByDynamicSqlWhere" resultType="entity.Student">-->
+    <!--     select  * from student-->
+    <!--         -->
+    <!--    <where>-->
+    <!--        <if test="name!=null  and name!='' ">-->
+    <!--            name = #{name }-->
+    <!--        </if>-->
+    <!--        <if test="age>0">-->
+    <!--           or age>#{age}-->
+    <!--        </if>-->
+    <!--    </where>-->
+
+    <!--    </select>-->
+    <!--    &lt;!&ndash;=============================where用法结束====================================&ndash;&gt;-->
+    <!--    -->
+    <!--    -->
+    <!--    &lt;!&ndash;============================= in(?,?,?,?)开始================================&ndash;&gt;-->
+    <!--    <select id="selectByForEach" resultType="entity.Student">-->
+
+    <!--        select * from student where id in(-->
+
+    <!--            <foreach collection="list" separator="," item="stu">-->
+
+    <!--            #{stu.id}-->
+    <!--            </foreach>-->
+    <!--            )-->
+    <!--    </select>-->
+    <!--&lt;!&ndash;    注意 这里的的collection 是说 用的哪种集合 很显然 我们用的是list集合&ndash;&gt;-->
+    <!--&lt;!&ndash;    item是说 集合里面 每个元素 应该怎么称呼 这里我们称他们是 stu&ndash;&gt;-->
+    <!--&lt;!&ndash;    separator 说的是 分隔符是什么 很显然 在sql语句里面 分隔符是 , &ndash;&gt;-->
+    <!--&lt;!&ndash;    最终的结果是： select * from student where id in( ? , ? , ? )  &ndash;&gt;-->
+
+    <!--    &lt;!&ndash;============================= in(?,?,?,?)结束================================&ndash;&gt;-->
+
+    <!--    -->
+    <!--    &lt;!&ndash;=======================resultmap的用法开始====================================&ndash;&gt;-->
+    <!--    <resultMap id="studentMap2" type="entity.myStudent">-->
+    <!--        &lt;!&ndash;resultMap只能有一个名字 不能重复 type是在哪个类上面建立对应的属性&ndash;&gt;-->
+    <!--        <id column="id" property="stuId"></id>-->
+    <!--        <result column="name" property="stuName"></result>-->
+    <!--        <result column="age" property="stuAge"></result>-->
+    <!--        <result column="email" property="stuEmail"></result>-->
+    <!--    </resultMap>-->
+    <!--    -->
+    <!--    <select id="selectMyStudents" resultMap="studentMap2">-->
+    <!--    select id,name,email,age from student-->
+    <!--    </select>-->
+    <!--    &lt;!&ndash;=========================resultmap用法结束===================================&ndash;&gt;-->
+    <!--    -->
+
+
+</mapper>

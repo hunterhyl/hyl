@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!--注解驱动 做ajax需要(@ResponseBody) 某些情况下访问静态资源也需要
+    配合：    <mvc:resources mapping="/static/**" location="/static/"/>  使用
+    webapp下创建一个static包 里面放入图片 网页等等 是我们的常用做法-->
+    <mvc:annotation-driven/>
+
+
+
+    <context:component-scan base-package="controller"/>         <!--有了这个(@Controller)才能让类创建对象,
+                                                                    里面的url和函数绑定处理业务(@RequestMapping)-->
+
+    <mvc:interceptors>                                          <!--声明拦截器-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>            <!--对这个路径下的请求-->
+            <bean class="interceptor.MyInterceptor"/>       <!--都用这个拦截器拦截-->
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
+    <!--     视图解析器 配置资源动态网页 （因为WEB-INF下的文件不能直接访问） -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/static/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>

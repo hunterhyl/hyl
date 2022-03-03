@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<context:property-placeholder location="classpath:jdbc.properties"/>
+<!--创建jdbc.properties的文件即可（从resources下面算起）-->
+<bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+      init-method="init" destroy-method="close">
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="maxActive" value="20"/>
+</bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="myDataSource"/>
+    <property name="configLocation" value="classpath:mybatis.xml"/>
+    <!--classpath后面加mybatis的路径（从resources下面算起）-->
+</bean>
+
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    <property name="basePackage" value="org/example/dao"/>
+    <!--需要换的只是包名 它会扫描包中的所有接口 并且对其意义创建出dao 并放入容器中
+        名字是接口的首字母小写 需要扫描多个包 用逗号隔开 这个包是放增删改查接口的包-->
+</bean>
+
+<!--事务管理器 需要告诉 管理的是哪个数据库 所以ref的是 myDataSource -->
+<bean id="TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="myDataSource"/>
+</bean>
+
+<!--======================以下处理事务的方法 二选一============================-->
+
+<!--这种方式是spring的方式 开启事务驱动 告诉spring 使用注解管理事务-->
+<!--使用方法是在公共方法上添加注解@Transcation....-->
+
+<!--    <tx:annotation-driven transaction-manager="TransactionManager"/>-->
+
+<!--=======================================================================-->
+
+<!--以下是aspject的方式 适合大型项目 代码和配置文件完全的分离-->
+<tx:advice id="myAdvice" transaction-manager="TransactionManager">
+    <tx:attributes>
+        <tx:method name="buy" propagation="REQUIRED" isolation="DEFAULT"
+                   rollback-for="java.lang.RuntimeException"/>
+        <tx:method name="add*" propagation="REQUIRES_NEW"/>
+        <tx:method name="delete*"/>
+    </tx:attributes>
+</tx:advice>
+<!--以上是方法名 以下是哪个包的这些方法-->
+<aop:config>
+    <aop:pointcut id="servicePt" expression="execution(* *..service..*.*(..))"/>
+    <!--以上是确定了哪些包和哪些包中的方法需要事务 以下就是二者结合一下即可-->
+    <aop:advisor advice-ref="myAdvice" pointcut-ref="servicePt"/>
+</aop:config>
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+<!--===============================================================-->
+
+
+</beans>
