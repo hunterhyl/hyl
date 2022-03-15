@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxActive" value="20"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="myDataSource"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <!--classpath后面加mybatis的路径（从resources下面算起）-->
+        <property name="typeAliasesPackage" value="org.example.pojo"/>
+        <!--org.example.pojo实体类所在的包 起个简称的作用-->
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.example.mapper"/>
+        <!--需要换的只是包名 它会扫描包中的所有接口 并且对其意义创建出 dao 并放入容器中
+            名字是接口的首字母小写 需要扫描多个包 用逗号隔开 这个包是放增删改查接口的包-->
+    </bean>
+
+
+
+</beans>

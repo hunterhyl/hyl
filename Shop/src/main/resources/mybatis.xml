@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--<configuration>-->
+<!--    <settings>-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--    </settings>-->
+<!--&lt;!&ndash;    分页插件的配置&ndash;&gt;-->
+<!--    <plugins>-->
+<!--        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>-->
+<!--    </plugins>-->
+<!--</configuration>-->
+<configuration>
+    <!--这里原本是 mybatis 的配置文件 但是因为spring完全接管了 mybatis 所以 这里只需要配置一些spring管不到的-->
+    <!--分页插件的设置-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+    </plugins>
+
+
+</configuration>
